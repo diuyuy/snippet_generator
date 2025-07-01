@@ -103,7 +103,7 @@ const askSourceFile = () => {
   rl.question(
     "내용을 읽어올 소스 코드 파일명을 입력하세요 (예: example.ts): ",
     (fileName) => {
-      const regExp = /['\[\]"\s]/g;
+      const regExp = /['\[\]"\s,]/g;
       fileName = fileName.trim().replace(regExp, "");
       if (existFiles.includes(fileName)) {
         // 파일명을 올바르게 입력받은 후에 readFile을 실행
