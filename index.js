@@ -8,13 +8,13 @@ const rl = readline.createInterface({
   output: stdout,
 });
 
-const currDir = process.cwd();
+const newWordDir = process.cwd();
 const existFiles = [];
 
 const printFiles = () => {
   const sourceExtensions = [".js", ".ts", ".jsx", ".tsx"];
   try {
-    const allFiles = fs.readdirSync(currDir);
+    const allFiles = fs.readdirSync(newWordDir);
 
     const sourceFiles = allFiles.filter((file) => {
       const fileExtension = path.extname(file);
@@ -44,11 +44,11 @@ const askQuestions = (() => {
   // 클로저를 사용하여 상태(idx, questions 등)를 유지
   return (sourceCode) => {
     // 마지막 질문 순서
-    const lastQuestionIdx = questions.length - 1;
+    // const lastQuestionIdx = questions.length - 1;
 
-    rl.question(`${questions[Math.min(idx, lastQuestionIdx)]}: `, (answer) => {
+    rl.question(`${questions[idx]}: `, (answer) => {
       // "prefix", "description" 질문 처리
-      if (idx < lastQuestionIdx) {
+      if (idx < questions.length - 1) {
         snippet[questions[idx]] = answer;
         idx += 1;
         askQuestions(sourceCode); // 다음 질문으로
@@ -61,10 +61,10 @@ const askQuestions = (() => {
         // RegExp와 'g' 플래그로 모든 일치 항목을 치환
         // let modifiedCode = sourceCode;
         replaceWordTuple.forEach((tuple) => {
-          const [pre, curr] = tuple;
-          if (pre && curr) {
-            const regex = new RegExp(pre.trim(), "g");
-            sourceCode = sourceCode.replace(regex, curr.trim());
+          const [pre, newWord] = tuple;
+          if (pre && newWord) {
+            const regExp = new RegExp(pre.trim(), "g");
+            sourceCode = sourceCode.replace(regExp, newWord.trim());
           }
         });
 
@@ -87,7 +87,7 @@ const askQuestions = (() => {
 
 // 프로그램 시작 함수
 const start = () => {
-  console.log(`현재 작업 디렉토리: ${currDir}`);
+  console.log(`현재 작업 디렉토리: ${newWordDir}`);
 
   const files = printFiles();
   if (files && files.length > 0) {
@@ -107,7 +107,7 @@ const askSourceFile = () => {
       fileName = fileName.trim().replace(regExp, "");
       if (existFiles.includes(fileName)) {
         // 파일명을 올바르게 입력받은 후에 readFile을 실행
-        const filePath = path.join(currDir, fileName);
+        const filePath = path.join(newWordDir, fileName);
         fs.readFile(filePath, "utf8", (err, data) => {
           if (err) {
             console.error("파일을 읽는 중 에러가 발생했습니다.", err);
