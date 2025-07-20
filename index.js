@@ -8,13 +8,13 @@ const rl = readline.createInterface({
   output: stdout,
 });
 
-const newWordDir = process.cwd();
+const newWorkingDir = process.cwd();
 const existFiles = [];
 
 const printFiles = () => {
   const sourceExtensions = [".js", ".ts", ".jsx", ".tsx"];
   try {
-    const allFiles = fs.readdirSync(newWordDir);
+    const allFiles = fs.readdirSync(newWorkingDir);
 
     const sourceFiles = allFiles.filter((file) => {
       const fileExtension = path.extname(file);
@@ -78,7 +78,7 @@ const askQuestions = (() => {
         return;
       }
 
-      // 사용자가 입력한 변수명(예: "oldVarl, newVar")을 배열에 추가
+      // 사용자가 입력한 변수명(예: "oldVar, newVar")을 배열에 추가
       replaceWordTuple.push(answer.split(","));
       askQuestions(sourceCode); // 계속해서 변수 입력받기
     });
@@ -87,7 +87,7 @@ const askQuestions = (() => {
 
 // 프로그램 시작 함수
 const start = () => {
-  console.log(`현재 작업 디렉토리: ${newWordDir}`);
+  console.log(`현재 작업 디렉토리: ${newWorkingDir}`);
 
   const files = printFiles();
   if (files && files.length > 0) {
@@ -107,7 +107,7 @@ const askSourceFile = () => {
       fileName = fileName.trim().replace(regExp, "");
       if (existFiles.includes(fileName)) {
         // 파일명을 올바르게 입력받은 후에 readFile을 실행
-        const filePath = path.join(newWordDir, fileName);
+        const filePath = path.join(newWorkingDir, fileName);
         fs.readFile(filePath, "utf8", (err, data) => {
           if (err) {
             console.error("파일을 읽는 중 에러가 발생했습니다.", err);
